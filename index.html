@@ -3,170 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Triki - Juego</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            padding: 20px;
-            background: linear-gradient(45deg, #ff6347, #ffa07a, #ffd700, #32cd32, #1e90ff, #8a2be2);
-            background-size: 400% 400%;
-            animation: gradientBackground 10s ease infinite;
-            min-height: 100vh;
-        }
-
-        h1 {
-            margin-bottom: 20px;
-            color: black; /* Color negro para el encabezado */
-        }
-
-        #game-board {
-            display: inline-block;
-            border: 2px solid #000;
-        }
-
-        .row {
-            display: flex;
-        }
-
-        .cell {
-            width: 100px;
-            height: 100px;
-            border: 1px solid #000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 36px;
-            cursor: pointer;
-            background-color: rgba(255, 255, 255, 0.6);
-        }
-
-        #status {
-            margin-top: 20px;
-            font-size: 20px;
-            color: white;
-        }
-
-        button {
-            margin-top: 20px;
-            padding: 10px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background-color: #0056b3;
-        }
-
-        @keyframes gradientBackground {
-            0% {
-                background-position: 0% 50%;
-            }
-            50% {
-                background-position: 100% 50%;
-            }
-            100% {
-                background-position: 0% 50%;
-            }
-        }
-    </style>
+    <title>Feed y Chat de Comunicación</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>Mi primer juego</h1>
-    <div id="game-board">
-        <div class="row">
-            <div class="cell" data-index="0"></div>
-            <div class="cell" data-index="1"></div>
-            <div class="cell" data-index="2"></div>
+    <div class="container">
+        <!-- Feed de Publicaciones -->
+        <div class="feed">
+            <h2>Feed de Publicaciones</h2>
+            <div class="post" id="post1">
+                <div class="post-header">
+                    <img src="https://via.placeholder.com/50" alt="Avatar" class="avatar">
+                    <h3 class="username">Usuario 1</h3>
+                    <span class="post-time">Hace 1 hora</span>
+                </div>
+                <p class="post-content">¡Este es un post de ejemplo! Aquí se puede poner cualquier texto.</p>
+            </div>
+
+            <div class="post" id="post2">
+                <div class="post-header">
+                    <img src="https://via.placeholder.com/50" alt="Avatar" class="avatar">
+                    <h3 class="username">Usuario 2</h3>
+                    <span class="post-time">Hace 2 horas</span>
+                </div>
+                <p class="post-content">Otro post para mostrar cómo se ve el feed de publicaciones. ¡Genial!</p>
+            </div>
         </div>
-        <div class="row">
-            <div class="cell" data-index="3"></div>
-            <div class="cell" data-index="4"></div>
-            <div class="cell" data-index="5"></div>
-        </div>
-        <div class="row">
-            <div class="cell" data-index="6"></div>
-            <div class="cell" data-index="7"></div>
-            <div class="cell" data-index="8"></div>
+
+        <!-- Chat en Vivo -->
+        <div class="chat">
+            <div class="chat-header">
+                <h2>Chat en Vivo</h2>
+            </div>
+            <div class="chat-window" id="chatWindow">
+                <!-- Aquí se cargarán los mensajes -->
+            </div>
+            <div class="chat-input">
+                <input type="text" id="messageInput" placeholder="Escribe un mensaje...">
+                <button onclick="sendMessage()">Enviar</button>
+            </div>
         </div>
     </div>
-    <div id="status"></div>
-    <button id="reset">Reiniciar Juego</button>
 
-    <script>
-        const cells = document.querySelectorAll('.cell');
-        const statusDiv = document.getElementById('status');
-        const resetButton = document.getElementById('reset');
-
-        let currentPlayer = 'X';
-        let gameBoard = ['', '', '', '', '', '', '', '', ''];
-        let gameActive = true;
-
-        const checkWinner = () => {
-            const winPatterns = [
-                [0, 1, 2],
-                [3, 4, 5],
-                [6, 7, 8],
-                [0, 3, 6],
-                [1, 4, 7],
-                [2, 5, 8],
-                [0, 4, 8],
-                [2, 4, 6]
-            ];
-
-            for (let pattern of winPatterns) {
-                const [a, b, c] = pattern;
-                if (gameBoard[a] && gameBoard[a] === gameBoard[b] && gameBoard[a] === gameBoard[c]) {
-                    return gameBoard[a];
-                }
-            }
-            return null;
-        };
-
-        const handleClick = (index) => {
-            if (gameBoard[index] || !gameActive) return;
-            gameBoard[index] = currentPlayer;
-            cells[index].textContent = currentPlayer;
-
-            const winner = checkWinner();
-            if (winner) {
-                gameActive = false;
-                statusDiv.textContent = `${winner} gana!`;
-            } else if (gameBoard.every(cell => cell !== '')) {
-                gameActive = false;
-                statusDiv.textContent = '¡Empate!';
-            } else {
-                currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
-                statusDiv.textContent = `Turno de ${currentPlayer}`;
-            }
-        };
-
-        const resetGame = () => {
-            gameBoard = ['', '', '', '', '', '', '', '', ''];
-            gameActive = true;
-            currentPlayer = 'X';
-            statusDiv.textContent = `Turno de ${currentPlayer}`;
-            cells.forEach(cell => cell.textContent = '');
-        };
-
-        cells.forEach(cell => {
-            cell.addEventListener('click', (e) => {
-                const index = e.target.dataset.index;
-                handleClick(index);
-            });
-        });
-
-        resetButton.addEventListener('click', resetGame);
-
-        statusDiv.textContent = `Turno de ${currentPlayer}`;
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
