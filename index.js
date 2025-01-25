@@ -1,65 +1,26 @@
-const cells = document.querySelectorAll('.cell');
-const statusDiv = document.getElementById('status');
-const resetButton = document.getElementById('reset');
+// Función para agregar mensajes al chat
+function sendMessage() {
+    const messageInput = document.getElementById('messageInput');
+    const message = messageInput.value.trim();
 
-let currentPlayer = 'X';
-let gameBoard = ['', '', '', '', '', '', '', '', ''];
-let gameActive = true;
+    if (message !== '') {
+        const chatWindow = document.getElementById('chatWindow');
+        const chatMessage = document.createElement('div');
+        chatMessage.classList.add('chat-message');
+        
+        // Agregar el nombre de usuario y el mensaje
+        chatMessage.innerHTML = `
+            <span class="chat-username">Tú:</span>
+            <p class="chat-text">${message}</p>
+        `;
+        
+        // Agregar el nuevo mensaje al chat
+        chatWindow.appendChild(chatMessage);
+        
+        // Desplazar el chat hacia abajo automáticamente
+        chatWindow.scrollTop = chatWindow.scrollHeight;
 
-const checkWinner = () => {
-    const winPatterns = [
-        [0, 1, 2],
-        [3, 4, 5],
-        [6, 7, 8],
-        [0, 3, 6],
-        [1, 4, 7],
-        [2, 5, 8],
-        [0, 4, 8],
-        [2, 4, 6]
-    ];
-
-    for (let pattern of winPatterns) {
-        const [a, b, c] = pattern;
-        if (gameBoard[a] && gameBoard[a] === gameBoard[b] && gameBoard[a] === gameBoard[c]) {
-            return gameBoard[a];
-        }
+        // Limpiar el campo de entrada
+        messageInput.value = '';
     }
-    return null;
-};
-
-const handleClick = (index) => {
-    if (gameBoard[index] || !gameActive) return;
-    gameBoard[index] = currentPlayer;
-    cells[index].textContent = currentPlayer;
-
-    const winner = checkWinner();
-    if (winner) {
-        gameActive = false;
-        statusDiv.textContent = `${winner} gana!`;
-    } else if (gameBoard.every(cell => cell !== '')) {
-        gameActive = false;
-        statusDiv.textContent = '¡Empate!';
-    } else {
-        currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
-        statusDiv.textContent = `Turno de ${currentPlayer}`;
-    }
-};
-
-const resetGame = () => {
-    gameBoard = ['', '', '', '', '', '', '', '', ''];
-    gameActive = true;
-    currentPlayer = 'X';
-    statusDiv.textContent = `Turno de ${currentPlayer}`;
-    cells.forEach(cell => cell.textContent = '');
-};
-
-cells.forEach(cell => {
-    cell.addEventListener('click', (e) => {
-        const index = e.target.dataset.index;
-        handleClick(index);
-    });
-});
-
-resetButton.addEventListener('click', resetGame);
-
-statusDiv.textContent = `Turno de ${currentPlayer}`;
+}
